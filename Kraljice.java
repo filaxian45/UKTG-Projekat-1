@@ -44,6 +44,72 @@ public class Kraljice{
         } 
         return nov;
     }
+    private static int[] rot90(int[] w){
+        int n = w.length;
+        int temp;
+        int[][] nov = transform1D2D(w, n);
+        for(int i = 0; i <n; i++){ //transponovanje matrice
+            for(int j = i; j<n;j++){
+                temp = nov[j][i];
+                nov[j][i] = nov[i][j];
+                nov[i][j] = temp;
+            }
+        }
+        for(int k = 0; k < n;k++){ // nakon transponovanja, obrcu se redovi
+            for(int l = 0; l < n/2;l++){
+                temp = nov[k][l];
+                nov[k][l] = nov[k][n-1-l];
+                nov[k][n-1-l] = temp;
+            }
+        }
+        int[] output = transform2D1D(nov, n);
+        return output;
+    }
+    private static int[] rot180(int[] w){
+        int n = w.length;
+        int temp;
+        int[][] nov = transform1D2D(w, n);
+        for(int k = 0; k < n;k++){ //obrcu se redovi
+            for(int l = 0; l < n/2;l++){
+                temp = nov[k][l];
+                nov[k][l] = nov[k][n-1-l];
+                nov[k][n-1-l] = temp;
+            }
+        }
+        for(int i = 0;i<n;i++){//obrcu se kolone
+            for(int j =0; j<n/2;j++){
+                temp = nov[j][i];
+                nov[j][i] = nov[n-j-1][i];
+                nov[n-j-1][i] = temp;
+            }
+        }
+        int[] output = transform2D1D(nov, n);
+        return output;
+    }
+    private static int[] rot270(int[] w){
+        int n = w.length;
+        int temp;
+        int[][] nov = transform1D2D(w, n);
+        ispisiMatricu(nov, n);
+        for(int i = 0; i <n; i++){ //transponovanje matrice
+            for(int j = i; j<n;j++){
+                temp = nov[j][i];
+                nov[j][i] = nov[i][j];
+                nov[i][j] = temp;
+            }
+        }
+        for(int i = 0;i<n;i++){//obrcu se kolone
+            for(int j =0; j<n/2;j++){
+                temp = nov[j][i];
+                nov[j][i] = nov[n-j-1][i];
+                nov[n-j-1][i] = temp;
+            }
+        }
+        System.out.println("LINEBREAKER");
+        ispisiMatricu(nov, n);
+        int[] output = transform2D1D(nov, n);
+        return output;
+    }
     static void ispisiNiz(int[] w){
         System.out.print("[ ");
         for(int i =0; i < w.length; i++){
@@ -80,11 +146,11 @@ public class Kraljice{
     private static boolean obradaIs(int[][] res, int[] a){ //WIP, nema funkcionalnost za proveru izomorfnost
         for(int i = 0; i < res.length ; i++){
             if(res[i] != null){
-                if(isEqualNiz(res[i], a)){
+            if(isEqualNiz(res[i],rot90(a)) || isEqualNiz(res[i],rot180(a)) || isEqualNiz(res[i],rot270(a)) || /*TBD*/){
                     return false;
                 }
             }
-        }
+       // }
         return true;
 
     }
@@ -108,9 +174,10 @@ public class Kraljice{
     }
     static void obradi(int[] w, int n, int[][] res){
         if(NemaDijaNapada(w, n)){
-            if(obradiIs(res,w))
-            System.out.print(BR + ": ");
-            
+            if(obradaIs(res,w)){
+                res[BR] = w;
+                BR++;
+            }
         }
     }
     public static void main(String[] args){
@@ -132,9 +199,7 @@ public class Kraljice{
       w[6] = 2;
       w[7] = 5;
       ispisiNiz(w);
-      int[][] temp = transform1D2D(w,n);
-      ispisiMatricu(temp,n);
-      int[] r = transform2D1D(temp, n);
+      int[] r = rot270(w);
       ispisiNiz(r);
     }
 }
